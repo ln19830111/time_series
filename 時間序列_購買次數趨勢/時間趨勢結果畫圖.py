@@ -3,13 +3,19 @@ import numpy as np
 import matplotlib.pyplot as plt 
 
 #定義基金14分類
-Label_columns=['新興市場', '美國', '大中華',
-    '亞太', '歐洲', '全球', '科技', '生技醫療', '天然資源礦業金屬',
-    '公債,投資級債,貨幣型', '新興市場債', '高收益債', '股債平衡&多重資產', '不動產'
-    ]
+# Label_columns=['新興市場', '美國', '大中華',
+#     '亞太', '歐洲', '全球', '科技', '生技醫療', '天然資源礦業金屬',
+#     '公債,投資級債,貨幣型', '新興市場債', '高收益債', '股債平衡&多重資產', '不動產'
+#     ]
 
-data=pd.read_csv('test1819.csv',engine='c',parse_dates=['有效日期'],usecols=['有效日期']+Label_columns)
-pre_data=pd.read_csv('pre_test.csv',engine='c',parse_dates=['有效日期'],usecols=['有效日期']+Label_columns)
+Label_columns ='區域	產業	投資標的'.split('	')
+
+# data=pd.read_csv('test1819.csv',engine='c',parse_dates=['有效日期'],usecols=['有效日期']+Label_columns)
+# pre_data=pd.read_csv('pre_test.csv',engine='c',parse_dates=['有效日期'],usecols=['有效日期']+Label_columns)
+
+data=pd.read_csv('存戶_購買基金_瀏覽過金融_理財_19_07以後.csv',engine='c',parse_dates=['有效日期'],usecols=['CST_ID','有效日期']+Label_columns)
+pre_data=pd.read_csv('pre_test_2019.csv',engine='c',parse_dates=['有效日期'],usecols=['CST_ID','有效日期']+Label_columns)
+
 
 
 data.drop_duplicates(inplace=True)
@@ -40,7 +46,10 @@ def buy_time_trend(data,name):
         for y in month:
             tmp_list.append(data[(data['year']==x) &( data['month']==y)][Label_columns].sum().values)
 
-    array_201819=np.vstack([array_2018,array_2019])
+    if len(year) >1 :
+        array_201819=np.vstack([array_2018,array_2019])
+    else:
+        array_201819=np.array(array_2019)
     plt.plot(array_201819.sum(axis=1),label=name)
     plt.xticks(list(range(len(time_list))),labels=time_list)
     plt.legend()
@@ -70,11 +79,13 @@ def class_buy_time_trend(data):
         for y in month:
             tmp_list.append(data[(data['year']==x) &( data['month']==y)][Label_columns].sum().values)
 
-    array_201819=np.vstack([array_2018,array_2019])
+    if len(year) >1 :
+        array_201819=np.vstack([array_2018,array_2019])
+    else:
+        array_201819=np.array(array_2019)
 
     for x in range(len(Label_columns)):
         plt.plot(array_201819[:,x])
-        plt.xticks(list(range(len(time_list))),labels=time_list)
     plt.xticks(list(range(len(time_list))),labels=time_list)
     plt.show()
 
