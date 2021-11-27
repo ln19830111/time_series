@@ -1,6 +1,13 @@
 import pandas as pd 
 import numpy as np 
 import matplotlib.pyplot as plt 
+from pylab import mpl
+
+# 指定默认字体：解决plot不能显示中文问题
+mpl.rcParams['font.sans-serif'] = ['Microsoft YaHei']
+mpl.rcParams['axes.unicode_minus'] = False 
+np.set_printoptions(threshold=np.inf,suppress=True)
+
 
 #定義基金14分類
 # Label_columns=['新興市場', '美國', '大中華',
@@ -11,10 +18,10 @@ import matplotlib.pyplot as plt
 Label_columns ='區域	產業	投資標的'.split('	')
 
 # data=pd.read_csv('test1819.csv',engine='c',parse_dates=['有效日期'],usecols=['有效日期']+Label_columns)
-# pre_data=pd.read_csv('pre_test.csv',engine='c',parse_dates=['有效日期'],usecols=['有效日期']+Label_columns)
+# pre_data=pd.read_csv('pre_test.csv',engine='c',parse_dates=['有效日期'],usecols=['CST_ID','有效日期']+Label_columns)
 
 data=pd.read_csv('存戶_購買基金_瀏覽過金融_理財_19_07以後.csv',engine='c',parse_dates=['有效日期'],usecols=['CST_ID','有效日期']+Label_columns)
-pre_data=pd.read_csv('pre_test_2019.csv',engine='c',parse_dates=['有效日期'],usecols=['CST_ID','有效日期']+Label_columns)
+pre_data=pd.read_csv('pre_test.csv',engine='c',parse_dates=['有效日期'],usecols=['CST_ID','有效日期']+Label_columns)
 
 
 
@@ -52,7 +59,6 @@ def buy_time_trend(data,name):
         array_201819=np.array(array_2019)
     plt.plot(array_201819.sum(axis=1),label=name)
     plt.xticks(list(range(len(time_list))),labels=time_list)
-    plt.legend()
 
 
 def class_buy_time_trend(data):
@@ -87,12 +93,13 @@ def class_buy_time_trend(data):
     for x in range(len(Label_columns)):
         plt.plot(array_201819[:,x])
     plt.xticks(list(range(len(time_list))),labels=time_list)
+    plt.legend(Label_columns)
     plt.show()
 
 
-
-buy_time_trend(data,'ground_true')
-buy_time_trend(pre_data,'pre')
+buy_time_trend(pre_data,'預測')
+buy_time_trend(data,'實際')
+plt.legend()
 plt.grid(True)
 plt.show()
 class_buy_time_trend(data)
